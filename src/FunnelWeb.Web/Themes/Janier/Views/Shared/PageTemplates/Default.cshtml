@@ -1,0 +1,116 @@
+﻿@model FunnelWeb.Web.Views.Wiki.PageModel
+@{
+    // This is the default template that renders a blog post.
+    // The actual "Page" does nothing except render the body of the post and meta data.
+    Layout = @Html.ThemePath() + "/Views/Shared/_Public.cshtml";
+}
+@section Meta {
+    <meta name="description" content="@Model.Entry.MetaDescription" />
+    <meta name="keywords" content="@Model.Entry.TagsCommaSeparated" />
+    <link rel="canonical" href="@Html.Qualify(Html.ActionUrl("Page", new { page = Model.Entry.Name }))" />
+    <link rel="pingback" href="@Html.Qualify(Url.Content("~/pingback"))" />
+    @if (Model.Entry.IsPriorVersion)
+    {
+        <meta name="robots" content="noindex, nofollow" />
+    }
+}
+ @*
+@section Summary {
+   <h2>
+        <em>
+            @Html.RenderTrusted(Model.Entry.Summary, Formats.Markdown)
+        </em>
+    </h2>
+}*@
+
+@*@if (!Html.Settings().EnableDisqusCommenting)
+{
+    @Html.ValidationSummary("Comment unsuccessful. Please correct the errors below.")
+}*@
+
+@if (Model.Entry.Status == FunnelWeb.Model.EntryStatus.Private)
+{
+    Html.RenderPartial("_PrivateEntryNotification", Model.Page);
+}
+
+<article class="blog-post">
+    <div class="row">
+        <div class="span8">
+            @if (!Model.Entry.HideChrome)
+            {
+                <h1 class="post-title">
+                    @Html.ActionLink(Model.Entry.Title, "Page", "Wiki", new { page = Model.Entry.Name }, null)
+                </h1>
+                <hr />
+@*
+    @Html.DisplayFor(x => x.Entry.Published, new { @class = "entry-date" })*@
+            }
+            <div class="post-content">
+                <div class="entry-container@{if (Model.Entry.HideChrome)
+                                             {<text> hidechrome</text>}}">
+                    @if (!Model.Entry.HideChrome && Model.Entry.IsPriorVersion)
+                    {
+                        <div class='entry-tools'>
+                            <div>
+                                <span>You are looking at revision @Model.Entry.RevisionNumber of this page, which may be out of date. @Html.ActionLink("View the latest version.", "Page", "Wiki", new { page = Model.Entry.Name }, null)
+                                </span>
+                                @if (ViewData.IsLoggedIn())
+                                {
+                                    <span>@Html.ActionLink("Revert to this version.", "Revert", "WikiAdmin", new { Area = "Admin", page = Model.Page, revision = Model.Entry.RevisionNumber }, new { })</span>
+                                }
+                                <span>&nbsp;</span>
+                            </div>
+                        </div>
+                    }
+                    @RenderBody()
+                    <hr />
+                    @if (!Model.Entry.HideChrome)
+                    {
+                        @Html.DisplayFor(x => Html.Settings().FacebookLike)
+  
+@* @Html.DisplayFor(x => x.Entry.TagsCommaSeparated)*@
+  
+                        Html.RenderPartial("_EntryTools", Model, ViewData);
+        
+                        @Html.DisplayFor(x => x.Entry.Pingbacks, new { Model.Entry.PingbackCount, Model.Entry.Name })
+                    }
+                    else
+                    {
+                        Html.RenderPartial("_EntryTools", Model, ViewData);
+                    }
+                </div>
+            </div>
+            @* <ul class="post-meta">
+                <li><i class="icon-calendar"></i><a href="#">October 30, 2012</a></li>
+                <li><i class="icon-user"></i><a href="#">DXThemes</a></li>
+                <li><i class="icon-list-alt"></i><a href="#">News</a>, <a href="#">Web Design</a></li>
+                <li><i class="icon-tag"></i><a href="#">CSS3</a> <a href="#">HTML5</a> <a href="#">Responsive</a></li>
+                <li><i class="icon-comment"></i><a href="#">12 Comments</a></li>
+            </ul>*@
+        </div>
+
+    </div>
+</article>
+
+
+
+<div class="clear">
+</div>
+@if (Model.Entry.IsDiscussionEnabled)
+{
+    @Html.DisplayFor(x => x.Entry.Comments, new { Model.Entry })
+
+    if (Html.Settings().DisableCommentsOlderThan > 0 && DateTime.UtcNow.AddDays(-Html.Settings().DisableCommentsOlderThan) > Model.Entry.Published && !Html.Settings().EnableDisqusCommenting)
+    {
+    <p>No new comments are allowed on this post.</p>
+    }
+    else
+    {
+        Html.RenderPartial("_EditComments", Model);
+    }
+}
+
+@section Scripts{
+    @Scripts.Render("~/bundles/wmd")
+    @* @Scripts.Render("~/bundles/site")*@
+}

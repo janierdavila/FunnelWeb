@@ -1,0 +1,260 @@
+﻿@using StackExchange.Profiling
+<!DOCTYPE html>
+<!--[if lt IE 7 ]><html class="ie ie6" lang="en"> <![endif]-->
+<!--[if IE 7 ]><html class="ie ie7" lang="en"> <![endif]-->
+<!--[if IE 8 ]><html class="ie ie8" lang="en"> <![endif]-->
+<!--[if (gte IE 9)|!(IE)]><!-->
+<html lang="en">
+<!--<![endif]-->
+
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" type="image/vnd.microsoft.icon" href="@Html.Qualify(Href(Html.ThemePath() + "/content/images/favicon.ico?1"))"/>
+
+    <link href="@Html.Qualify(Html.ActionUrl("Feed", "Feed", null))" type="application/atom+xml" rel="alternate" title="Blog Feed" />
+    <link href="@Html.Qualify(Html.ActionUrl("CommentFeed", "Feed", null))" type="application/atom+xml" rel="alternate" title="Comments Feed" />
+    <link title="RSD" href="@Html.Qualify(Href("~/rsd.xml"))" type="application/rsd+xml" rel="EditURI" />
+
+    <!-- Apple crap this theme came with -->
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href= "@Html.Qualify(Href(Html.ThemePath() + "/Content/images/apple-touch-icon-144-precomposed.png"))"/>
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="@Html.Qualify(Href(Html.ThemePath() + "/Content/images/apple-touch-icon-114-precomposed.png"))"/>
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="@Html.Qualify(Href(Html.ThemePath() + "/Content/images/apple-touch-icon-72-precomposed.png"))"/>
+    <link rel="apple-touch-icon-precomposed" href="@Html.Qualify(Href(Html.ThemePath() + "/Content/images/apple-touch-icon-57-precomposed.png"))"/>
+
+    <title>@(ViewBag.Title == null ? "" : (ViewBag.Title + " - "))@Html.Settings().SiteTitle</title>
+
+    <!-- Styles -->
+    @Styles.Render(Html.ThemePath() + "/content/css/bootstrap.css")
+    @Styles.Render(Html.ThemePath() + "/content/css/style.css")
+    @Styles.Render(Html.ThemePath() + "/content/css/prettyPhoto.css")
+    @* @Styles.Render(Html.ThemePath() + "/content/css/font-icomoon.css")*@
+    @Styles.Render(Html.ThemePath() + "/content/css/font-awesome.css")
+
+    <!--[if IE 7]>
+        <link rel="stylesheet" href="assets/css/font-awesome-ie7.css"/>
+    <![endif]-->
+
+    <!--[if lt IE 9]>
+        <script type="text/javascript" src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    @RenderSection("Meta", required: false)
+    @MvcHtmlString.Create(Html.Settings().HtmlHead)
+    <script>
+        /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+        window.disqus_shortname = '@Html.Settings().DisqusShortname'; // required: replace example with your forum shortname
+        window.disqus_identifier = document.title || 'Home';
+        window.disqus_developer = !! ~document.location.href.indexOf("localhost") ? 1 : 0;
+        window.disqus_url = document.location.href;
+    </script>
+</head>
+
+<body>
+    <!--top menu-->
+    <section id="top-menu">
+        <div class="container">
+            <div class="row">
+                <div class="span6 hidden-phone">
+                    <p class="feed">Subscribe to be notified for updates: <a href="/feed">RSS Feed</a></p>
+                </div>
+                <div class="span6">
+                    <ul class="top-social">
+                        <li><a href="https://www.facebook.com/janier.davila" rel="tooltip" data-placement="bottom" data-original-title="Facebook"><i class="icon-facebook"></i></a></li>
+                        <li><a href="https://twitter.com/janierdavila" rel="tooltip" data-placement="bottom" data-original-title="Twitter"><i class="icon-twitter"></i></a></li>
+                        <li><a href="https://plus.google.com/u/0/107924138600261331253/posts" rel="tooltip" data-placement="bottom" data-original-title="Google+"><i class="icon-google-plus last"></i></a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!--header-->
+    <header id="header">
+        <div class="container">
+            <div class="row">
+                <div class="span5 logo">
+                    <h2>
+                        <a class="logo-img" href="/" title="responsive template">
+                            <img class="img-polaroid" src="http://www.gravatar.com/avatar/2cb935247d1e1af75edae0a07443847e.png" alt="Me" />
+                            Janier Davila
+                        </a>
+                    </h2>
+                </div>
+                <div class="span7">
+                    <nav id="menu" class="clearfix pull-right">
+                        <ul>
+                            @Html.QualifyLinks(Html.Settings().MainLinks)
+                            @if (ViewData.IsLoggedIn())
+                            {
+                                <li>@Html.AdminActionLink("New Post", "Edit", "WikiAdmin")</li>
+
+                                <li>@Html.AdminActionLink("Admin", "Index", "Admin")</li>
+
+                                <li>@Html.AdminActionLink("Logout", "Logout", "Login")</li>
+                            }
+
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!--page header / breadcrumbs-->
+    <section class="breadcrumbs">
+        <div class="container">
+            <div class="page-header">
+                <div class="row">
+                    <div class="span8">
+                        <blockquote>
+                            <h3><em>@Html.Settings().SiteTitle</em></h3>
+                            <h4><em>Always learning...</em></h4>
+                        </blockquote>
+
+                    </div>
+                    <div class="span4 hidden-phone">
+                        <section class="search clearfix">
+                            @using (Html.BeginForm("Search", "Wiki", FormMethod.Get, new { @class = "input-append", id = "search" }))
+                            {
+                                @Html.TextBox("q", Request.QueryString["q"] ?? "Search...", new { alt = "Search", @class = "span4", size = "16", onfocus = "if(this.value=='Search...') this.value=''", onblur = "if(this.value=='') this.value='Search...'" })
+                                <input class="btn search-bt" type="submit" name="submit" value="" />
+                            }
+                        </section>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!--container-->
+    <section id="container">
+        <div class="container">
+            <div class="row">
+
+                <section id="page-sidebar" class="pull-left span8">
+                    @if (IsSectionDefined("Summary"))
+                    {
+                        <div class="well">
+                                @RenderSection("Summary", required: false)
+                        </div>
+                    }
+
+                    @RenderBody()
+                </section>
+
+                <!--sidebar-->
+                @Html.Partial(Html.ThemePath() + "/views/shared/_Sidebar.cshtml")
+            </div>
+        </div>
+    </section>
+
+    <!--footer-->
+    <footer id="footer">
+        <div class="container">
+            <div class="row">
+                <div class="span4">
+
+                    <p>
+                        <a href="http://creativecommons.org/licenses/by-nc-sa/3.0/" rel="license"><span style="text-align: center;">
+                            <img style="border-width: 0px; margin-right: auto; margin-left: auto; display: block;" src="http://i.creativecommons.org/l/by-nc-sa/3.0/88x31.png" alt="Creative Commons License" /></span></a><br />
+                        Unless otherwise stated, all work in this blog, including source code, posts,&nbsp;images, projects&nbsp;are licensed under a <a href="http://creativecommons.org/licenses/by-nc-sa/3.0/" rel="license">Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License</a>.
+                    </p>
+                </div>
+                <div class="span8">
+                    <div class="row">
+                        <div class="span8"></div>
+                        <div class="span8">
+                        </div>
+                    </div>
+                </div>
+                <div class="span4">
+                    <p class="heading">About Me</p>
+                    @Html.RenderTrusted(Html.Settings().Introduction, Formats.Markdown)
+                </div>
+                <div class="span4">
+                    <p class="heading">Links</p>
+                    <ul class="footer-navigate">
+                        <li><a href="/">Home</a></li>
+
+                        @Html.QualifyLinks(Html.Settings().MainLinks)
+
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!--footer menu-->
+    <section id="footer-menu">
+        <div class="container">
+            <div class="row">
+                <div class="span8">
+                    <p class="copyright">
+                        @MvcHtmlString.Create(Html.Settings().HtmlFooter)
+                    </p>
+                </div>
+                <div class="span4 hidden-phone">
+                    @if (!ViewData.IsLoggedIn())
+                    {
+                        <span>
+                            @Html.AdminActionLink("Log in", "Login", "Login").
+                        </span>
+                    }
+                </div>
+            </div>
+        </div>
+    </section>
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/jsdate")
+    @Scripts.Render("~/bundles/showdown")
+    @Scripts.Render("~/bundles/prettify")
+    @Scripts.Render("~/bundles/site")
+
+    <!-- theme javascript -->
+    @Scripts.Render(Html.ThemePath() + "/content/js/bootstrap.min.js")
+    @Scripts.Render(Html.ThemePath() + "/content/js/jquery.easing.1.3.js")
+    @Scripts.Render(Html.ThemePath() + "/content/js/jquery.quicksand.js")
+    @Scripts.Render(Html.ThemePath() + "/content/js/superfish.js")
+    @Scripts.Render(Html.ThemePath() + "/content/js/hoverIntent.js")
+    @Scripts.Render(Html.ThemePath() + "/content/js/jquery.flexslider.js")
+    @Scripts.Render(Html.ThemePath() + "/content/js/jflickrfeed.min.js")
+    @Scripts.Render(Html.ThemePath() + "/content/js/jquery.prettyPhoto.js")
+    @Scripts.Render(Html.ThemePath() + "/content/js/jquery.elastislide.js")
+    @Scripts.Render(Html.ThemePath() + "/content/js/jquery.tweet.js")
+    @Scripts.Render(Html.ThemePath() + "/content/js/smoothscroll.js")
+    @Scripts.Render(Html.ThemePath() + "/content/js/jquery.ui.totop.js")
+    @Scripts.Render(Html.ThemePath() + "/content/js/main.js")
+    @Scripts.Render(Html.ThemePath() + "/content/js/ajax-mail.js")
+
+    @MiniProfiler.RenderIncludes()
+
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            //$(".twitter").tweet({
+            //    join_text: "auto",
+            //    username: "janierdavila",
+            //    avatar_size: 40,
+            //    count: 3,
+            //    auto_join_text_default: "we said,",
+            //    auto_join_text_ed: "we",
+            //    auto_join_text_ing: "we were",
+            //    auto_join_text_reply: "we replied",
+            //    auto_join_text_url: "we were checking out",
+            //    loading_text: "loading tweets..."
+            //});
+
+            $('.carousel').carousel({
+                interval: 5000
+            });
+        });
+    </script>
+
+    @if (IsSectionDefined("Scripts"))
+    {
+ @RenderSection("Scripts")
+    }
+</body>
+</html>

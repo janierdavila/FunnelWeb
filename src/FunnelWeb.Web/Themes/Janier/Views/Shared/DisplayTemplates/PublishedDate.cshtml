@@ -1,0 +1,6 @@
+﻿@model DateTime
+
+<div class="span1">
+    <div class="post-meta-day">@Model.ToLocalTime().ToString("dd")</div>
+    <div class="post-meta-month">@Model.ToLocalTime().ToString("MMM, yyyy")</div>
+</div>

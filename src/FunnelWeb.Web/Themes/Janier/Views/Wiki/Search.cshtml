@@ -1,0 +1,61 @@
+@using FunnelWeb.Web.Application.Extensions
+@model FunnelWeb.Web.Views.Wiki.SearchModel
+@{
+    if (Model.Is404)
+    {
+        Response.StatusCode = 404;
+    }
+    ViewBag.Title = "Search: " + Model.SearchText;
+}
+
+@section Summary {
+    <p class="text-error lead">
+        A team of ninjas have scoured the land, looking for the results to your query. 
+    </p>
+}
+
+<h1>Search Results: @Model.SearchText</h1>
+
+@if (Model.Is404)
+{
+    <p>
+        The page you requested does not exist. Below are some pages that may be related.
+    </p>
+}
+
+@*<section class="search clearfix">
+    @using (Html.BeginForm("Search", "Wiki", FormMethod.Get, new { @class = "input-append pull-left", id = "search" }))
+    {  <label for="q">Search again:</label> 
+        @Html.TextBox("q", Model.SearchText, new { alt = "Search", @class = "span4", size = "16", value = "Search...", onfocus = "if(this.value=='Search...') this.value=''", onblur = "if(this.value=='') this.value='Search...'" })
+        <input class="btn search-bt" type="submit" name="submit" value="" />
+    }
+</section>*@
+
+
+@if (!Model.Results.Any())
+{
+    <div class="well">
+        <p>
+            Sorry, there were no results for your query.
+        </p>
+    </div>
+}
+else
+{
+    <div class="search-list">
+        @foreach (var entry in Model.Results)
+        {
+            <div class='search-line'>
+                <h2>@Html.Qualify(Html.ActionLink(entry.Title, "Page", new { page = entry.Name }))</h2>
+                @if (!string.IsNullOrEmpty(entry.MetaDescription))
+                {
+                    <p>@entry.MetaDescription)</p>
+                }
+                <div class='revised'>
+                    <span class='month'>@entry.Published.ToString("MMM d")</span>
+                    <span class='year'>@entry.Published.ToString("yyyy")</span>
+                </div>
+            </div>
+        }
+    </div>
+}

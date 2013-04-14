@@ -1,0 +1,46 @@
+﻿@model FunnelWeb.Web.Models.Paginator
+@if (Model.TotalPages > 1)
+{
+    <div class="pagination pagination-centered">
+        @*<span class="title">Page: </span>*@
+        <ul>
+            @for (var i = 0; i < Model.TotalPages; i++)
+            {
+                if (i == Model.CurrentPage)
+                { 
+                <li class="active">
+                    <span>
+                        @MvcHtmlString.Create((i + 1).ToString())
+                    </span>
+                </li>
+                }
+                else if (i == 0)
+                {
+                <li>
+                    @Html.ActionLink((i + 1).ToString(), Model.ActionName)
+                </li>
+                }
+                else
+                {
+                <li>
+                    @Html.ActionLink((i + 1).ToString(), Model.ActionName, new { pageNumber = i })
+                </li>
+                }
+     
+           
+                <!--pagination-->@*
+                    <div class="pagination pagination-centered">
+                        <ul>
+                            <li class="disabled"><a href="#">&laquo;</a></li>
+                            <li class="active"><a href="#">1</a></li>
+                            <li><a href="#">2</a></li>
+                            <li><a href="#">3</a></li>
+                            <li><a href="#">4</a></li>
+                            <li><a href="#">5</a></li>
+                            <li><a href="#">&raquo;</a></li>
+                        </ul>
+                    </div>*@
+            }
+        </ul>
+    </div>
+}
