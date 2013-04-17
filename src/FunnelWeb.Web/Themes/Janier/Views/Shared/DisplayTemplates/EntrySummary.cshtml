@@ -12,16 +12,17 @@
                     <span class="text-info">@Html.Date(Model.Published)</span> 
                 </li>
                 <li>
-                    <i class="icon-tag icon-large"></i>
-                    <span class="text-info">@Html.DisplayFor(x => Model.TagsCommaSeparated)</span> 
-                </li>
-                <li>
                     <i class="icon-comment icon-large"></i>
                     <a href='@Url.Action("Page", "Wiki", new { page = Model.Name })#comments'>
                                                                      <span class='comment-count text-info'>@Model.CommentCount</span>
                                                                      <span class="text-info">comment@(Model.CommentCount == 1 ? "" : "s")</span>
                                                                  </a>
                 </li>
+                <li>
+                    <i class="icon-tag icon-large"></i>
+                    <span class="text-info">@Html.DisplayFor(x => Model.TagsCommaSeparated)</span> 
+                </li>
+                
             </ul>
            
             <div class="post-content">

@@ -44,8 +44,8 @@ h1, h2, h3, h4, h5, h6,
 
 /* Link Colors */
 /*-----------------------------------------------------------------------------------*/
-a {color: #293674; text-decoration: none;}
-a:hover {color: #F7941D; text-decoration: none;}
+a {color: #F7941D /*#293674*/; text-decoration: none;}
+a:hover {color: #293674; text-decoration: none;}
 
 /*-----------------------------------------------------------------------------------*/
 /*	2.	Header, Navigation & Menus
@@ -755,6 +755,8 @@ a:hover {color: #F7941D; text-decoration: none;}
 /*-----------------------------------------------------------------------------------*/
 
 .post-title {margin-top: 10px;}
+.post-title a { color: #293674;}
+.post-title a:hover { color: #F7941D;}
 .post-meta {overflow: hidden; margin-left: 0; margin-bottom: 20px; /*font-size: 11px;*/}
 .post-meta li {float: left; margin-right: 15px; list-style: none;}
 .post-meta-day {padding: 10px 0; font-size: 30px; text-align: center; color: #FFFFFF; background-color: #5195CE; margin-top: 10px;}
@@ -1187,3 +1189,6 @@ input.search-query,
     -moz-box-shadow: 0 0 0 rgba(0, 0, 0, 0);
     box-shadow: 0 0 0 rgba(0, 0, 0, 0);
 }
+
+.text-info a { color: #3a87ad;} 
+.text-info a:hover { color: #F7941D;}

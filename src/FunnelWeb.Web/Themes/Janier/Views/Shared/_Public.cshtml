@@ -30,9 +30,8 @@
     @Styles.Render(Html.ThemePath() + "/content/css/bootstrap.css")
     @Styles.Render(Html.ThemePath() + "/content/css/style.css")
     @Styles.Render(Html.ThemePath() + "/content/css/prettyPhoto.css")
-    @* @Styles.Render(Html.ThemePath() + "/content/css/font-icomoon.css")*@
     @Styles.Render(Html.ThemePath() + "/content/css/font-awesome.css")
-
+    @Styles.Render(Html.ThemePath() + "/content/css/code-style.css")
     <!--[if IE 7]>
         <link rel="stylesheet" href="assets/css/font-awesome-ie7.css"/>
     <![endif]-->
@@ -210,6 +209,7 @@
     @Scripts.Render("~/bundles/jsdate")
     @Scripts.Render("~/bundles/showdown")
     @Scripts.Render("~/bundles/prettify")
+   @* @Scripts.Render(Html.ThemePath() + "/content/js/lang-sql.js")*@
     @Scripts.Render("~/bundles/site")
 
     <!-- theme javascript -->
